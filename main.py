@@ -11,6 +11,7 @@ from typing import List, Optional, Dict, Any, Union
 import httpx
 from bs4 import BeautifulSoup
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware  # 👈 1. Added CORS import here
 from pydantic import BaseModel
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
@@ -21,6 +22,15 @@ logger = logging.getLogger("HDHub4U-Engine")
 
 app = FastAPI(title="HDHub4U Streaming Engine API")
 
+# 👈 2. Added this whole block right under app = FastAPI(...)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all websites to talk to your API
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49"
 TMDB_BASE_IMG = "https://image.tmdb.org/t/p/original"
 TMDB_API_URL = "https://wild-surf-4a0d.phisher1.workers.dev"
@@ -29,6 +39,8 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0",
     "Cookie": "xla=s4t"
 }
+
+# ... (Rest of your code like class ActorData(BaseModel): etc.) ...
 
 class ActorData(BaseModel):
     name: str
